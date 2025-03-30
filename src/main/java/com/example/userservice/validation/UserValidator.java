@@ -1,7 +1,6 @@
 package com.example.userservice.validation;
 
 import com.example.userservice.dto.UserRequestDTO;
-import com.example.userservice.dto.UserResponseDTO;
 import com.example.userservice.model.User;
 import com.example.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

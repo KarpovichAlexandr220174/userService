@@ -1,7 +1,6 @@
 package com.example.userservice.updating;
 
 import com.example.userservice.dto.UserRequestDTO;
-import com.example.userservice.dto.UserResponseDTO;
 import com.example.userservice.password.PasswordGenerator;
 import com.example.userservice.model.User;
 import com.example.userservice.service.EmailService;

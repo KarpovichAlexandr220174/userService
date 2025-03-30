@@ -3,6 +3,7 @@ package com.example.userservice.service;
 import com.example.userservice.dto.UserRequestDTO;
 import com.example.userservice.dto.UserResponseDTO;
 import com.example.userservice.enums.Status;
+import com.example.userservice.exceptions.UserNotFoundException;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.password.PasswordGenerator;
 import com.example.userservice.model.User;
@@ -49,7 +50,7 @@ public class UserService {
     @Transactional
     public UserResponseDTO updateUser(UUID userId, UserRequestDTO userRequestDTO) {
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException(userId));
 
         updateFields.applyUpdates(existingUser, userRequestDTO);
 
@@ -57,18 +58,19 @@ public class UserService {
 
         return userMapper.toDto(updatedUser);
     }
+
     @Transactional
     public void deleteUser(UUID userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new IllegalArgumentException("User not found");
-        }
-        userRepository.deleteById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        userRepository.delete(user);
     }
 
     public void prepareNewUser(User user){
         String password = passwordGenerator.generate();
         user.setPassword(password);
-        user.setRegistrationDate(java.util.Date.from(Instant.now()));
+        user.setRegistrationDate(Instant.now());
         user.setLastLogin(null);
         user.setStatus(Status.ACTIVE);
 
