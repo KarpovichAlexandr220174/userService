@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: userservice
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/practiceDB
+    username: postgres
+    password: "0000"
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update  # Или "create" для начальной генерации схемы
+    show-sql: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: sanyakalash01@gmail.com
+    password: xjdk tkri enna jrzw
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
