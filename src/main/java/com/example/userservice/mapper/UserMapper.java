@@ -6,7 +6,6 @@ import com.example.userservice.dto.UserResponseDTO;
 import com.example.userservice.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
