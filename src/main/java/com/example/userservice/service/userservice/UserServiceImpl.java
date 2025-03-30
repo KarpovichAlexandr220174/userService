@@ -1,4 +1,4 @@
-package com.example.userservice.service;
+package com.example.userservice.service.userservice;
 
 import com.example.userservice.dto.UserRequestDTO;
 import com.example.userservice.dto.UserResponseDTO;
@@ -8,6 +8,7 @@ import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.password.PasswordGenerator;
 import com.example.userservice.model.User;
 import com.example.userservice.repository.UserRepository;
+import com.example.userservice.service.emailservice.EmailServiceImpl;
 import com.example.userservice.updating.UpdateFields;
 import com.example.userservice.validation.UserValidator;
 import jakarta.transaction.Transactional;
@@ -19,14 +20,15 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final EmailService emailService;
+    private final EmailServiceImpl emailService;
     private final UserValidator userValidator;
     private final PasswordGenerator passwordGenerator;
     private final UpdateFields updateFields;
     private final UserMapper userMapper;
 
+    @Override
     @Transactional
     public UserResponseDTO addUser(UserRequestDTO userRequestDTO) {
 
@@ -40,6 +42,7 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
+    @Override
     public List<UserResponseDTO> getUsers() {
         return userRepository.findAll()
                 .stream()
@@ -47,6 +50,7 @@ public class UserService {
                 .toList();
     }
 
+    @Override
     @Transactional
     public UserResponseDTO updateUser(UUID userId, UserRequestDTO userRequestDTO) {
         User existingUser = userRepository.findById(userId)
@@ -59,6 +63,7 @@ public class UserService {
         return userMapper.toDto(updatedUser);
     }
 
+    @Override
     @Transactional
     public void deleteUser(UUID userId) {
         User user = userRepository.findById(userId)
@@ -67,7 +72,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public void prepareNewUser(User user){
+    private void prepareNewUser(User user){
         String password = passwordGenerator.generate();
         user.setPassword(password);
         user.setRegistrationDate(Instant.now());

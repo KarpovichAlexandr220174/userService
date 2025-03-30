@@ -3,7 +3,7 @@ package com.example.userservice.updating;
 import com.example.userservice.dto.UserRequestDTO;
 import com.example.userservice.password.PasswordGenerator;
 import com.example.userservice.model.User;
-import com.example.userservice.service.EmailService;
+import com.example.userservice.service.emailservice.EmailServiceImpl;
 import com.example.userservice.validation.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UpdateFields {
     private final UserValidator userValidator;
-    private final EmailService emailService;
+    private final EmailServiceImpl emailService;
     private final PasswordGenerator passwordGenerator;
 
     public void applyUpdates(User existingUser, UserRequestDTO newUserDTO) {
