@@ -11,9 +11,10 @@ import com.example.userservice.repository.UserRepository;
 import com.example.userservice.service.emailservice.EmailServiceImpl;
 import com.example.userservice.updating.UpdateFields;
 import com.example.userservice.validation.UserValidator;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;

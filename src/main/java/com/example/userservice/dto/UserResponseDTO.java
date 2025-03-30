@@ -17,7 +17,6 @@ public class UserResponseDTO {
     private String email;
     private Role role;
     private Status status;
-
     private Date registrationDate;
     private Date lastLogin;
 
