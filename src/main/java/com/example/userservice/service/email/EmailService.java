@@ -1,4 +1,4 @@
-package com.example.userservice.service.emailservice;
+package com.example.userservice.service.email;
 
 public interface EmailService {
 

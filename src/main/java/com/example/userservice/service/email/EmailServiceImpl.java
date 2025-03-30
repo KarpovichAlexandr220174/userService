@@ -1,4 +1,4 @@
-package com.example.userservice.service.emailservice;
+package com.example.userservice.service.email;
 
 import com.example.userservice.exceptions.EmailSendingException;
 import lombok.RequiredArgsConstructor;

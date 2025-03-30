@@ -1,10 +1,10 @@
-package com.example.userservice.updating;
+package com.example.userservice.update;
 
 import com.example.userservice.dto.UserRequestDTO;
 import com.example.userservice.password.PasswordGenerator;
 import com.example.userservice.model.User;
-import com.example.userservice.service.emailservice.EmailService;
-import com.example.userservice.validation.UserValidator;
+import com.example.userservice.service.email.EmailService;
+import com.example.userservice.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

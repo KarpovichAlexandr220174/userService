@@ -1,4 +1,4 @@
-package com.example.userservice.service.userservice;
+package com.example.userservice.service.user;
 
 import com.example.userservice.dto.UserRequestDTO;
 import com.example.userservice.dto.UserResponseDTO;
@@ -8,9 +8,9 @@ import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.password.PasswordGenerator;
 import com.example.userservice.model.User;
 import com.example.userservice.repository.UserRepository;
-import com.example.userservice.service.emailservice.EmailServiceImpl;
-import com.example.userservice.updating.UpdateFields;
-import com.example.userservice.validation.UserValidator;
+import com.example.userservice.service.email.EmailServiceImpl;
+import com.example.userservice.update.UpdateFields;
+import com.example.userservice.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

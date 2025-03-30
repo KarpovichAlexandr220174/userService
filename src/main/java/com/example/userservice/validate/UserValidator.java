@@ -1,4 +1,4 @@
-package com.example.userservice.validation;
+package com.example.userservice.validate;
 
 import com.example.userservice.dto.UserRequestDTO;
 import com.example.userservice.exceptions.UserValidationException;
