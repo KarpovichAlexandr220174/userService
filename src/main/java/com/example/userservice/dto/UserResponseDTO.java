@@ -5,7 +5,7 @@ import com.example.userservice.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -17,7 +17,8 @@ public class UserResponseDTO {
     private String email;
     private Role role;
     private Status status;
-    private Date registrationDate;
-    private Date lastLogin;
+    private Instant registrationDate;
+    private Instant lastLogin;
+    private boolean passwordResetRequired;
 
 }

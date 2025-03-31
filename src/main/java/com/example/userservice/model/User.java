@@ -45,6 +45,9 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Instant registrationDate;
 
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private Instant lastLogin;
+
+    @Column(nullable = false)
+    private boolean passwordResetRequired = false;
 }

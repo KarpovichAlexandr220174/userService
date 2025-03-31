@@ -12,6 +12,7 @@ import com.example.userservice.service.email.EmailServiceImpl;
 import com.example.userservice.update.UpdateFields;
 import com.example.userservice.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordGenerator passwordGenerator;
     private final UpdateFields updateFields;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -35,10 +37,11 @@ public class UserServiceImpl implements UserService {
 
         userValidator.validateNewUser(userRequestDTO);
         User user = userMapper.toEntity(userRequestDTO);
-        prepareNewUser(user);
+
+        String rawPassword = prepareNewUser(user);
 
         User savedUser = userRepository.save(user);
-        emailService.sendPasswordEmail(user.getEmail(), user.getPassword());
+        emailService.sendPasswordEmail(user.getEmail(), "Ваш пароль: " + rawPassword);
 
         return userMapper.toDto(savedUser);
     }
@@ -73,12 +76,15 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    private void prepareNewUser(User user){
-        String password = passwordGenerator.generate();
-        user.setPassword(password);
+    private String prepareNewUser(User user){
+        String rawPassword = passwordGenerator.generate();
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+
+        user.setPassword(hashedPassword);
         user.setRegistrationDate(Instant.now());
         user.setLastLogin(null);
         user.setStatus(Status.ACTIVE);
 
+        return rawPassword;
     }
 }
