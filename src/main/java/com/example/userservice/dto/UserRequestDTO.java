@@ -17,10 +17,13 @@ public class UserRequestDTO {
     @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Некорректный формат email")
     private String email;
+
     @NotBlank(message = "Пароль не может быть пустым")
     private String password;
+
     @NotNull(message = "Роль не может быть пустой")
     private Role role;
+
     @NotNull(message = "Статус не может быть пустым")
     private Status status;
 

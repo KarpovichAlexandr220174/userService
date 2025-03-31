@@ -1,44 +1,52 @@
-package com.example.userservice.service;
+package com.example.userservice.service.user;
 
 import com.example.userservice.dto.UserRequestDTO;
 import com.example.userservice.dto.UserResponseDTO;
 import com.example.userservice.enums.Status;
+import com.example.userservice.exceptions.UserNotFoundException;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.password.PasswordGenerator;
 import com.example.userservice.model.User;
 import com.example.userservice.repository.UserRepository;
-import com.example.userservice.updating.UpdateFields;
-import com.example.userservice.validation.UserValidator;
-import jakarta.transaction.Transactional;
+import com.example.userservice.service.email.EmailServiceImpl;
+import com.example.userservice.update.UpdateFields;
+import com.example.userservice.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final EmailService emailService;
+    private final EmailServiceImpl emailService;
     private final UserValidator userValidator;
     private final PasswordGenerator passwordGenerator;
     private final UpdateFields updateFields;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
+    @Override
     @Transactional
     public UserResponseDTO addUser(UserRequestDTO userRequestDTO) {
 
         userValidator.validateNewUser(userRequestDTO);
         User user = userMapper.toEntity(userRequestDTO);
-        prepareNewUser(user);
+
+        String rawPassword = prepareNewUser(user);
 
         User savedUser = userRepository.save(user);
-        emailService.sendPasswordEmail(user.getEmail(), user.getPassword());
+        emailService.sendPasswordEmail(user.getEmail(), "Ваш пароль: " + rawPassword);
 
         return userMapper.toDto(savedUser);
     }
 
+    @Override
     public List<UserResponseDTO> getUsers() {
         return userRepository.findAll()
                 .stream()
@@ -46,10 +54,11 @@ public class UserService {
                 .toList();
     }
 
+    @Override
     @Transactional
     public UserResponseDTO updateUser(UUID userId, UserRequestDTO userRequestDTO) {
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException(userId));
 
         updateFields.applyUpdates(existingUser, userRequestDTO);
 
@@ -57,20 +66,25 @@ public class UserService {
 
         return userMapper.toDto(updatedUser);
     }
+
+    @Override
     @Transactional
     public void deleteUser(UUID userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new IllegalArgumentException("User not found");
-        }
-        userRepository.deleteById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        userRepository.delete(user);
     }
 
-    public void prepareNewUser(User user){
-        String password = passwordGenerator.generate();
-        user.setPassword(password);
-        user.setRegistrationDate(java.util.Date.from(Instant.now()));
+    private String prepareNewUser(User user){
+        String rawPassword = passwordGenerator.generate();
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+
+        user.setPassword(hashedPassword);
+        user.setRegistrationDate(Instant.now());
         user.setLastLogin(null);
         user.setStatus(Status.ACTIVE);
 
+        return rawPassword;
     }
 }

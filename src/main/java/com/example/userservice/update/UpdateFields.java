@@ -1,12 +1,12 @@
-package com.example.userservice.updating;
+package com.example.userservice.update;
 
 import com.example.userservice.dto.UserRequestDTO;
-import com.example.userservice.dto.UserResponseDTO;
 import com.example.userservice.password.PasswordGenerator;
 import com.example.userservice.model.User;
-import com.example.userservice.service.EmailService;
-import com.example.userservice.validation.UserValidator;
+import com.example.userservice.service.email.EmailService;
+import com.example.userservice.validate.UserValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 //applyUpdates --- Изменяет объект User, устанавливает новые значения.
@@ -16,6 +16,7 @@ public class UpdateFields {
     private final UserValidator userValidator;
     private final EmailService emailService;
     private final PasswordGenerator passwordGenerator;
+    private final PasswordEncoder passwordEncoder;
 
     public void applyUpdates(User existingUser, UserRequestDTO newUserDTO) {
         userValidator.validateUpdateUser(newUserDTO, existingUser);
@@ -25,9 +26,13 @@ public class UpdateFields {
         }
 
         if (newUserDTO.getEmail() != null && !newUserDTO.getEmail().equals(existingUser.getEmail())) {
-            existingUser.setEmail(newUserDTO.getEmail());
+
             String newPassword = passwordGenerator.generate();
-            existingUser.setPassword(newPassword);
+            String hashedPassword = passwordEncoder.encode(newPassword);
+
+            existingUser.setEmail(newUserDTO.getEmail());
+
+            existingUser.setPassword(hashedPassword);
             emailService.sendPasswordEmail(newUserDTO.getEmail(), newPassword);
         }
 

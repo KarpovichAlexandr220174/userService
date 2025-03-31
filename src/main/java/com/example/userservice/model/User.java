@@ -2,13 +2,12 @@ package com.example.userservice.model;
 
 import com.example.userservice.enums.Role;
 import com.example.userservice.enums.Status;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -43,10 +42,12 @@ public class User {
     @Column(nullable = false)
     private Status status;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
-    private Date registrationDate = new Date();
+    private Instant registrationDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastLogin;
+    @Column(updatable = false)
+    private Instant lastLogin;
+
+    @Column(nullable = false)
+    private boolean passwordResetRequired = false;
 }
